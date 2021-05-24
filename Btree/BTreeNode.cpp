@@ -22,19 +22,52 @@ void BTreeNode::traverse(){
     }
 }
 
-bool BTreeNode::searchForKey(int key, bool& done) {
+bool BTreeNode::search(int k, int& depth)
+{
+    depth++;
+    // Find the first key greater than or equal to k
+    int i = 0;
+    while (i < numOfKeys && k > keys[i])
+        i++;
+
+    // If the found key is equal to k, return this node
+    if (i < numOfKeys) {
+        if (keys[i] == k)
+            return true;
+    }
+    else {
+        if (keys[i - 1] == k)
+            return true;
+    }
+
+    // If the key is not found here and this is a leaf node
+    if (leaf == true)
+        return false;
+
+    // Go to the appropriate child
+    return Children[i]->search(k, depth);
+}
+
+bool BTreeNode::searchForKey(int key, bool& done, int& depth) {
     int i;
     for (i = 0; i < numOfKeys; i++){
         if (leaf == false) {
-            Children[i]->searchForKey(key, done);
+            depth++;
+            Children[i]->searchForKey(key, done, depth);
         }
         if (keys[i] == key) {
             done = true;
+            if (leaf == true) {
+                depth++;
+            }
             return true;
         }
     }
     if (leaf == false) {
-        Children[i]->searchForKey(key, done);
+        if (!done) {
+            depth++;
+        }
+        Children[i]->searchForKey(key, done, depth);
     }
     if (!done) {
         return false;
@@ -162,7 +195,7 @@ void BTreeNode::removeFromLeaf(int index){
     for (int i = index + 1; i < numOfKeys; ++i) {
         keys[i - 1] = keys[i];//move keys 1 pos backward
     }
-    numOfKeys -= 1;
+    numOfKeys--;
     return;
 }
 

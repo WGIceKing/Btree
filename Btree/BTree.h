@@ -31,8 +31,12 @@ public:
         }
     }
 
-    bool searchForKey(int key, bool& done) {
-        return (root == NULL) ? false : root->searchForKey(key, done);
+    bool searchForKey(int key, bool& done, int& depth) {
+        return (root == NULL) ? false : root->searchForKey(key, done, depth);
+    }
+
+    bool search(int k, int& depth) {
+        return (root == NULL) ? false : root->search(k, depth);
     }
 
     void insert(int key);

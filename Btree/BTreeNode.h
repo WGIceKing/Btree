@@ -11,9 +11,10 @@ public:
     BTreeNode(int givendegree, bool givenleaf);
     void insertNonFull(int key);
     void splitChild(int i, BTreeNode* ogNode);
+    bool search(int k, int& depth);
     void traverse();
     void save();
-    bool searchForKey(int key, bool& done);
+    bool searchForKey(int key, bool& done, int& depth);
     int findKey(int key) const;
     void remove(int key);
     void removeFromLeaf(int index);
