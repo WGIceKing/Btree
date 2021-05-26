@@ -16,8 +16,8 @@ public:
 	void push_front(int givenValue);
 	void push_back(int givenValue);
 	void pop_back();
-	bool check_value(int givenValue);
-	void print();
+	bool check_value(int givenValue) const;
+	void print() const;
 	node* getHead();
-	void deallocate();
+	void deallocate() const;
 };

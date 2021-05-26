@@ -1,11 +1,12 @@
 #include "CacheHandler.h"
 
-CacheHandler::CacheHandler(int givenSize, const std::string givenInput) {
+CacheHandler::CacheHandler(const int givenSize, const std::string& givenInput) {
 	this->cacheSize = givenSize;
 	this->input = givenInput;
 	this->usedCache = 0;
 	this->depthSumWithCache = 0;
 	this->depthSumWithoutCache = 0;
+	this->done = false;
 }
 
 void CacheHandler::loadInput() {

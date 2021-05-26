@@ -14,7 +14,7 @@ class CacheHandler {
 	LinkedList inputList;
 	bool done;
 public:
-	CacheHandler(int givenSize, const std::string givenInput);
+	CacheHandler(const int givenSize, const std::string& givenInput);
 	void loadInput();
 	void checkCache(BTree myTree);
 	void checkWithoutCache(BTree myTree);

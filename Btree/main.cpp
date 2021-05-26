@@ -38,7 +38,6 @@ int main() {
             std::cin >> insertedValue;
             done = false;
             int depth = 0;
-            //if (myTree.searchForKey(insertedValue, done, depth) != NULL) {
             if (myTree.search(insertedValue, depth) != NULL) {
                 std::cout << insertedValue << " +" << std::endl;
             }

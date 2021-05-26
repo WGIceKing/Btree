@@ -61,7 +61,7 @@ void LinkedList::pop_back() {
 	}
 }
 
-bool LinkedList::check_value(int givenValue) {
+bool LinkedList::check_value(int givenValue) const {
 	if (head == NULL) {
 		return false;
 	}
@@ -77,7 +77,7 @@ bool LinkedList::check_value(int givenValue) {
 	}
 }
 
-void LinkedList::print() {
+void LinkedList::print() const {
 	if (head == NULL) {
 		std::cout << "NULL" << std::endl;
 	}
@@ -95,7 +95,7 @@ node* LinkedList::getHead() {
 	return this->head;
 }
 
-void LinkedList::deallocate() {
+void LinkedList::deallocate() const {
 	node* cur = head;
 	if (head != NULL) {
 		while (cur != NULL) {
