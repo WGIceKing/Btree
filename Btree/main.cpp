@@ -48,7 +48,7 @@ int main() {
         }
 
         if (command == "P") {
-            myTree.traverse();
+            myTree.print();
         }
 
         if (command == "L") {
@@ -85,6 +85,6 @@ int main() {
         }
     }
 
-
+    myTree.deallocate();
     return 0;
 }

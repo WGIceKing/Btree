@@ -9,7 +9,7 @@ void LinkedList::push_front(int givenValue) {
 	node* new_node = new node;
 	new_node->next = head;
 	new_node->prev = NULL;
-	new_node->val.value = givenValue;
+	new_node->value = givenValue;
 
 	if (head == NULL) {
 		head = new_node;
@@ -25,7 +25,7 @@ void LinkedList::push_back(int givenValue) {
 	node* new_node = new node;
 	new_node->next = NULL;
 	new_node->prev = NULL;
-	new_node->val.value = givenValue;
+	new_node->value = givenValue;
 
 	if (head == NULL) {
 		head = new_node;
@@ -68,7 +68,7 @@ bool LinkedList::check_value(int givenValue) {
 	else {
 		node* tmp = head;
 		while (tmp != NULL) {
-			if (tmp->val.value == givenValue) {
+			if (tmp->value == givenValue) {
 				return true;
 			}
 			tmp = tmp->next;
@@ -84,7 +84,7 @@ void LinkedList::print() {
 	else {
 		node* tmp = head;
 		while (tmp != NULL) {
-			std::cout << tmp->val.value << " ";
+			std::cout << tmp->value << " ";
 			tmp = tmp->next;
 		}
 	}
@@ -95,6 +95,13 @@ node* LinkedList::getHead() {
 	return this->head;
 }
 
-node* LinkedList::getTail() {
-	return this->tail;
+void LinkedList::deallocate() {
+	node* cur = head;
+	if (head != NULL) {
+		while (cur != NULL) {
+			node* next = cur->next;
+			delete cur;
+			cur = next;
+		}
+	}
 }

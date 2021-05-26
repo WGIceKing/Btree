@@ -8,73 +8,40 @@ BTreeNode::BTreeNode(int givendegree, bool givenleaf){
     numOfKeys = 0;
 }
 
-void BTreeNode::traverse(){
+void BTreeNode::print(){
     int i;
     for (i = 0; i < numOfKeys; i++){
         if (leaf == false) {
-            Children[i]->traverse();
+            Children[i]->print();
         }
         std::cout << " " << keys[i];
     }
 
     if (leaf == false) {
-        Children[i]->traverse();
+        Children[i]->print();
     }
 }
 
-bool BTreeNode::search(int k, int& depth)
-{
+bool BTreeNode::search(int k, int& depth){
     depth++;
-    // Find the first key greater than or equal to k
     int i = 0;
-    while (i < numOfKeys && k > keys[i])
+    while (i < numOfKeys && k > keys[i]) {
         i++;
-
-    // If the found key is equal to k, return this node
+    }
     if (i < numOfKeys) {
-        if (keys[i] == k)
+        if (keys[i] == k) {
             return true;
+        }
     }
     else {
-        if (keys[i - 1] == k)
+        if (keys[i - 1] == k) {
             return true;
+        }
     }
-
-    // If the key is not found here and this is a leaf node
-    if (leaf == true)
+    if (leaf == true) {
         return false;
-
-    // Go to the appropriate child
+    }
     return Children[i]->search(k, depth);
-}
-
-bool BTreeNode::searchForKey(int key, bool& done, int& depth) {
-    int i;
-    for (i = 0; i < numOfKeys; i++){
-        if (leaf == false) {
-            depth++;
-            Children[i]->searchForKey(key, done, depth);
-        }
-        if (keys[i] == key) {
-            done = true;
-            if (leaf == true) {
-                depth++;
-            }
-            return true;
-        }
-    }
-    if (leaf == false) {
-        if (!done) {
-            depth++;
-        }
-        Children[i]->searchForKey(key, done, depth);
-    }
-    if (!done) {
-        return false;
-    }
-    else {
-        return true;
-    }
 }
 
 void BTreeNode::save(){
@@ -94,7 +61,9 @@ void BTreeNode::save(){
     }
 }
 
-void BTreeNode::insertNonFull(int key){
+//// INSERTION ////
+
+void BTreeNode::BTreeInsertNonFull(int key){
     int i = numOfKeys - 1;
     if (leaf == true){
         while (i >= 0 && keys[i] > key){//locates insertion place and moves greater keys +1 above
@@ -108,18 +77,17 @@ void BTreeNode::insertNonFull(int key){
         while (i >= 0 && keys[i] > key) {//looking for node to insert
             i--;
         }
-
         if (Children[i + 1]->numOfKeys == 2 * degree - 1){
-            splitChild(i + 1, Children[i + 1]);//split if full
+            BTreeSplitChild(i + 1, Children[i + 1]);//split if full
             if (keys[i + 1] < key) {//midle of C[i] moves up
                 i++;
             }
         }
-        Children[i + 1]->insertNonFull(key);
+        Children[i + 1]->BTreeInsertNonFull(key);
     }
 }
 
-void BTreeNode::splitChild(int i, BTreeNode* ogNode){
+void BTreeNode::BTreeSplitChild(int i, BTreeNode* ogNode){
     BTreeNode* new_node = new BTreeNode(ogNode->degree, ogNode->leaf);
     new_node->numOfKeys = degree - 1;
 
@@ -147,7 +115,9 @@ void BTreeNode::splitChild(int i, BTreeNode* ogNode){
     numOfKeys += 1;
 }
 
-int BTreeNode::findKey(int key) const{
+//// DELETION ////
+
+int BTreeNode::BTreeGetKey(int key) const{
     int index = 0;
     while (index < numOfKeys && keys[index] < key) {
         ++index;
@@ -155,15 +125,15 @@ int BTreeNode::findKey(int key) const{
     return index;
 }
 
-void BTreeNode::remove(int key){
-    int index = findKey(key);
+void BTreeNode::BTreeDelete(int key){
+    int index = BTreeGetKey(key);
 
     if (index < numOfKeys && keys[index] == key){
         if (leaf) {
-            removeFromLeaf(index);
+            BTreeDeleteFromLeaf(index);
         }
         else {
-            removeFromNonLeaf(index);
+            BTreeDeleteFromNoLeaf(index);
         }
 
     }
@@ -182,44 +152,41 @@ void BTreeNode::remove(int key){
             fill(index);
         }
         if (flag && index > numOfKeys) {
-            Children[index - 1]->remove(key);
+            Children[index - 1]->BTreeDelete(key);
         }
         else {
-            Children[index]->remove(key);
+            Children[index]->BTreeDelete(key);
         }
     }
-    return;
 }
 
-void BTreeNode::removeFromLeaf(int index){
+void BTreeNode::BTreeDeleteFromLeaf(int index){
     for (int i = index + 1; i < numOfKeys; ++i) {
         keys[i - 1] = keys[i];//move keys 1 pos backward
     }
     numOfKeys--;
-    return;
 }
 
-void BTreeNode::removeFromNonLeaf(int index){
+void BTreeNode::BTreeDeleteFromNoLeaf(int index){
     int key = keys[index];
 
     if (Children[index]->numOfKeys >= degree){
-        int prev = getPred(index);
+        int prev = GetPredevessingChild(index);
         keys[index] = prev;
-        Children[index]->remove(prev);
+        Children[index]->BTreeDelete(prev);
     }
     else if (Children[index + 1]->numOfKeys >= degree){
-        int next = getSucc(index);
+        int next = GetSuccessingChild(index);
         keys[index] = next;
-        Children[index + 1]->remove(next);
+        Children[index + 1]->BTreeDelete(next);
     }
     else{
-        merge(index);
-        Children[index]->remove(key);
+        BTreeMerge(index);
+        Children[index]->BTreeDelete(key);
     }
-    return;
 }
 
-int BTreeNode::getPred(int index) const{//moving right
+int BTreeNode::GetPredevessingChild(int index) const{//moving right
     BTreeNode* cur = Children[index];
     while (!cur->leaf) {
         cur = cur->Children[cur->numOfKeys];
@@ -227,7 +194,7 @@ int BTreeNode::getPred(int index) const{//moving right
     return cur->keys[cur->numOfKeys - 1];//last key of a leaf
 }
 
-int BTreeNode::getSucc(int index) const{//moving left
+int BTreeNode::GetSuccessingChild(int index) const{//moving left
     BTreeNode* cur = Children[index + 1];
     while (!cur->leaf) {
         cur = cur->Children[0];
@@ -237,23 +204,22 @@ int BTreeNode::getSucc(int index) const{//moving left
 
 void BTreeNode::fill(int index){//filing the node
     if (index != 0 and Children[index - 1]->numOfKeys >= degree) {
-        borrowFromPrev(index);
+        GetFromPreviousChild(index);
     }
     else if(index != numOfKeys and Children[index + 1]->numOfKeys >= degree) {
-        borrowFromNext(index);
+        GetFromNextChild(index);
     }
     else{
         if (index != numOfKeys) {
-            merge(index);
+            BTreeMerge(index);
         }
         else {
-            merge(index - 1);
+            BTreeMerge(index - 1);
         }
     }
-    return;
 }
 
-void BTreeNode::borrowFromPrev(int index){
+void BTreeNode::GetFromPreviousChild(int index){
 
     BTreeNode* child = Children[index];
     BTreeNode* sibling = Children[index - 1];
@@ -276,10 +242,9 @@ void BTreeNode::borrowFromPrev(int index){
     keys[index - 1] = sibling->keys[sibling->numOfKeys - 1];
     child->numOfKeys += 1;
     sibling->numOfKeys -= 1;
-    return;
 }
 
-void BTreeNode::borrowFromNext(int index){
+void BTreeNode::GetFromNextChild(int index){
 
     BTreeNode* child = Children[index];
     BTreeNode* sibling = Children[index + 1];
@@ -300,10 +265,9 @@ void BTreeNode::borrowFromNext(int index){
     }
     child->numOfKeys += 1;
     sibling->numOfKeys -= 1;
-    return;
 }
 
-void BTreeNode::merge(int index){//merging child with the next child (deleting the  next one)
+void BTreeNode::BTreeMerge(int index){//merging child with the next child (deleting the  next one)
     BTreeNode* child = Children[index];
     BTreeNode* sibling = Children[index + 1];
 
@@ -325,5 +289,20 @@ void BTreeNode::merge(int index){//merging child with the next child (deleting t
     child->numOfKeys += sibling->numOfKeys + 1;
     numOfKeys--;
     delete(sibling);
-    return;
+}
+
+//// DEALLOCATING ////
+
+void BTreeNode::deallocate() {
+    int i;
+    for (i = 0; i < numOfKeys; i++) {
+        if (leaf == false) {
+            Children[i]->deallocate();
+        }
+    }
+
+    if (leaf == false) {
+        Children[i]->deallocate();
+    }
+    delete this;
 }

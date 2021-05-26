@@ -1,13 +1,8 @@
 #pragma once
 #include <iostream>
 
-struct val {
-	int value;
-	bool found = false;//if found - true
-};
-
 struct node {
-	val val;
+	int value;
 	node* next;
 	node* prev;
 };
@@ -24,5 +19,5 @@ public:
 	bool check_value(int givenValue);
 	void print();
 	node* getHead();
-	node* getTail();
+	void deallocate();
 };

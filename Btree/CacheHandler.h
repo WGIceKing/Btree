@@ -18,4 +18,5 @@ public:
 	void loadInput();
 	void checkCache(BTree myTree);
 	void checkWithoutCache(BTree myTree);
+	~CacheHandler();
 };

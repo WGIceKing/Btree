@@ -10,17 +10,17 @@ void BTree::insert(int key){
         if (root->numOfKeys == 2 * degree - 1){//if root full - tree grows
             BTreeNode* new_node = new BTreeNode(degree, false);
             new_node->Children[0] = root;//prev root becomes a child of a new root
-            new_node->splitChild(0, root);//from prev root move a key to a new root
+            new_node->BTreeSplitChild(0, root);//from prev root move a key to a new root
             int i = 0;
 
             if (new_node->keys[0] < key) {
                 i++;
             }
-            new_node->Children[i]->insertNonFull(key);
+            new_node->Children[i]->BTreeInsertNonFull(key);
             root = new_node;
         }
         else {//if root is not full insert to it 
-            root->insertNonFull(key);
+            root->BTreeInsertNonFull(key);
         }
     }
 }
@@ -29,7 +29,7 @@ void BTree::remove(int key){
     if (!root){
         return;
     }
-    root->remove(key);
+    root->BTreeDelete(key);
 
     if (root->numOfKeys == 0){//if root empty - a child becomes a root
         BTreeNode* oldRoot = root;

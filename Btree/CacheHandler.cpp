@@ -23,18 +23,18 @@ void CacheHandler::checkCache(BTree myTree) {
 	node* inList = inputList.getHead();
 	while (inList != NULL) {
 		int depth = 0;
-		if (cache.check_value(inList->val.value) == true){
+		if (cache.check_value(inList->value) == true){
 			inList = inList->next;
 		}
 		else{
-			myTree.search(inList->val.value, depth);
+			myTree.search(inList->value, depth);
 			if (usedCache < cacheSize) {
-				cache.push_front(inList->val.value);
+				cache.push_front(inList->value);
 				usedCache++;
 			}
 			else {
 				cache.pop_back();
-				cache.push_front(inList->val.value);
+				cache.push_front(inList->value);
 			}
 			inList = inList->next;
 		}
@@ -49,9 +49,14 @@ void CacheHandler::checkWithoutCache(BTree myTree) {
 		int depth = 0;
 		done = false;
 		//myTree.searchForKey(inList->value, done, depth);
-		myTree.search(inList->val.value, depth);
+		myTree.search(inList->value, depth);
 		depthSumWithoutCache += depth;
 		inList = inList->next;
 	}
 	std::cout << "NO CACHE: " << depthSumWithoutCache << " ";
+}
+
+CacheHandler::~CacheHandler() {
+	cache.deallocate();
+	inputList.deallocate();
 }

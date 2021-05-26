@@ -19,9 +19,9 @@ public:
         return this->degree;
     }
 
-    void traverse(){
+    void print(){
         if (root != NULL) {
-            root->traverse();
+            root->print();
         }
     }
 
@@ -31,14 +31,15 @@ public:
         }
     }
 
-    bool searchForKey(int key, bool& done, int& depth) {
-        return (root == NULL) ? false : root->searchForKey(key, done, depth);
-    }
-
     bool search(int k, int& depth) {
         return (root == NULL) ? false : root->search(k, depth);
     }
 
     void insert(int key);
     void remove(int key);
+    void deallocate() {
+        if (root != NULL) {
+            root->deallocate();
+        }
+    }
 };
